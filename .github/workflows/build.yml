@@ -18,19 +18,10 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Gradle Wrapper and Build
-      run: |
-        if [ ! -f "./gradlew" ]; then
-          echo "Gerando Gradle Wrapper..."
-          gradle wrapper --gradle-version 8.5 || {
-            wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
-            unzip -q gradle-8.5-bin.zip
-            export PATH=$PWD/gradle-8.5/bin:$PATH
-            gradle wrapper --gradle-version 8.5
-          }
-        fi
-        chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+    - name: Setup Gradle and Build APK
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        arguments: assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
