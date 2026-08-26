@@ -18,12 +18,21 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Download Gradle and Build
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Build with Gradle Wrapper or Direct
       run: |
-        wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
-        unzip -q gradle-8.5-bin.zip
-        export PATH=$PWD/gradle-8.5/bin:$PATH
-        gradle assembleDebug
+        chmod +x gradlew || true
+        if [ -f "./gradlew" ]; then
+          ./gradlew assembleDebug
+        else
+          wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
+          unzip -q gradle-8.5-bin.zip
+          export PATH=$PWD/gradle-8.5/bin:$PATH
+          gradle wrapper --gradle-version 8.5
+          ./gradlew assembleDebug
+        fi
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
