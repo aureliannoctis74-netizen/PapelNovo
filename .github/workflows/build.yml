@@ -13,26 +13,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Build with Gradle Wrapper or Direct
-      run: |
-        chmod +x gradlew || true
-        if [ -f "./gradlew" ]; then
-          ./gradlew assembleDebug
-        else
-          wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
-          unzip -q gradle-8.5-bin.zip
-          export PATH=$PWD/gradle-8.5/bin:$PATH
-          gradle wrapper --gradle-version 8.5
-          ./gradlew assembleDebug
-        fi
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug --no-daemon
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
